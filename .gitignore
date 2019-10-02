@@ -1,0 +1,6 @@
+*.pth
+dataset/
+data/
+*.png
+*.jpg
+*.pyc
