@@ -50,7 +50,7 @@ def load_model(model, model_path):
 def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
 
     global train_step
-
+    save_dir = os.path.join(cfg.save_dir, cfg.exp_name)
     losses = AverageMeter()
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -90,6 +90,18 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
             print('({:d} / {:d}) - Loss: {:.4f} - tr_loss: {:.4f} - tcl_loss: {:.4f} - sin_loss: {:.4f} - cos_loss: {:.4f} - radii_loss: {:.4f}'.format(
                 i, len(train_loader), loss.item(), tr_loss.item(), tcl_loss.item(), sin_loss.item(), cos_loss.item(), radii_loss.item())
             )
+            with open("{0}/tr_loss_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, tr_loss.item()))
+            with open("{0}/tcl_loss_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, tcl_loss.item()))
+            with open("{0}/sin_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, sin_loss.item()))
+            with open("{0}/cos_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, cos_loss.item()))
+            with open("{0}/radii_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, radii_loss.item()))
+            with open("{0}/loss_result.txt".format(save_dir),"a+") as f:
+                f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, loss.item()))
 
         if i % cfg.log_freq == 0:
             logger.write_scalars({
@@ -108,6 +120,7 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
 
 
 def validation(model, valid_loader, criterion, epoch, logger):
+    save_dir = os.path.join(cfg.save_dir, cfg.exp_name)
     with torch.no_grad():
         model.eval()
         losses = AverageMeter()
@@ -145,6 +158,20 @@ def validation(model, valid_loader, criterion, epoch, logger):
                         loss.item(), tr_loss.item(), tcl_loss.item(), sin_loss.item(),
                         cos_loss.item(), radii_loss.item())
                 )
+                with open("{0}/tr_loss_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, tr_loss.item()))
+                with open("{0}/tcl_loss_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, tcl_loss.item()))
+                with open("{0}/sin_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, sin_loss.item()))
+                with open("{0}/cos_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, cos_loss.item()))
+                with open("{0}/radii_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, radii_loss.item()))
+                with open("{0}/loss_result.txt".format(save_dir),"a+") as f:
+                    f.write('{}_validation_{:.4f}\n'.format(epoch, loss.item()))
+
+
 
         logger.write_scalars({
             'loss': losses.avg,

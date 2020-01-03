@@ -169,8 +169,9 @@ def val(dataset, criterion, max_iter=1000):
             sim_preds = []
             for j in range(cpu_images.size(0)):
                 text_begin = 0 if j == 0 else length.data[:j].sum()
-                if torch.mean(preds0_prob[text_begin:text_begin+len(sim_preds0[j].split('$')[0]+'$')]).data[0] >\
-                 torch.mean(preds1_prob[text_begin:text_begin+len(sim_preds1[j].split('$')[0]+'$')]).data[0]:
+                # print (torch.mean(preds0_prob[text_begin:text_begin+len(sim_preds0[j].split('$')[0]+'$')]).data.item())
+                if torch.mean(preds0_prob[text_begin:text_begin+len(sim_preds0[j].split('$')[0]+'$')]).data.item() >\
+                 torch.mean(preds1_prob[text_begin:text_begin+len(sim_preds1[j].split('$')[0]+'$')]).data.item():
                     sim_preds.append(sim_preds0[j].split('$')[0]+'$')
                 else:
                     sim_preds.append(sim_preds1[j].split('$')[0][-1::-1]+'$')
@@ -238,12 +239,19 @@ for epoch in range(opt.niter):
             MORAN.eval()
 
             acc_tmp = val(test_dataset, criterion)
+
+            with open("{0}/Val_iter_result.txt".format(opt.experiment),"a+") as f:
+                f.write('{0}_{1}_{2}\n'.format(epoch, i, str(acc)[:6]))
+
             if acc_tmp > acc:
                 acc = acc_tmp
-                torch.save(MORAN.state_dict(), '{0}/{1}_{2}.pth'.format(
-                        opt.experiment, i, str(acc)[:6]))
+                torch.save(MORAN.state_dict(), '{0}/best_acc.pth'.format(
+                        opt.experiment))
 
-        if i % opt.saveInterval == 0:
+                with open("{0}/acc.txt".format(opt.experiment),"a+") as f:
+                    f.write('{0}_{1}_{2}\n'.format(epoch, i, str(acc)[:6]))
+
+        if i % opt.saveInterval == 0 and i != 0:
             torch.save(MORAN.state_dict(), '{0}/{1}_{2}.pth'.format(
                         opt.experiment, epoch, i))
 
@@ -257,7 +265,11 @@ for epoch in range(opt.niter):
         if i % opt.displayInterval == 0:
             t1 = time.time()            
             print ('Epoch: %d/%d; iter: %d/%d; Loss: %f; time: %.2f s;' %
-                    (epoch, opt.niter, i, len(train_loader), loss_avg.val(), t1-t0)),
+                    (epoch, opt.niter, i, len(train_loader), loss_avg.val(), t1-t0))
+
+            with open("{0}/loss_result.txt".format(opt.experiment),"a+") as f:
+                f.write('{0}_{1}_{2}\n'.format(epoch, i, str(loss_avg.val().item())[:6]))
+                
             loss_avg.reset()
             t0 = time.time()
 
