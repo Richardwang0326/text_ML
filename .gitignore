@@ -1,6 +1,6 @@
 *.pth
 logs/
-dataset/
+MORAN_v2/dataset/
 data/
 *.png
 *.jpg
