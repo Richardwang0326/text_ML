@@ -24,13 +24,13 @@ from util.summary import LogSummary
 lr = None
 train_step = 0
 
-def save_model(model, epoch, lr, optimzer):
+def save_model(model, epoch, lr, optimzer, _iter):
 
     save_dir = os.path.join(cfg.save_dir, cfg.exp_name)
     if not os.path.exists(save_dir):
         mkdirs(save_dir)
 
-    save_path = os.path.join(save_dir, 'textsnake_{}_{}.pth'.format(model.backbone_name, epoch))
+    save_path = os.path.join(save_dir, 'textsnake_{}_{}_{}.pth'.format(model.backbone_name, epoch, _iter))
     print('Saving to {}.'.format(save_path))
     state_dict = {
         'lr': lr,
@@ -102,6 +102,8 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
                 f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, radii_loss.item()))
             with open("{0}/loss_result.txt".format(save_dir),"a+") as f:
                 f.write('{}_{:d}_{:.4f}\n'.format(epoch, i, loss.item()))
+        if i % cfg.viz_save_iter == 0:
+            save_model(model, epoch, scheduler.get_lr(), optimizer, i)
 
         if i % cfg.log_freq == 0:
             logger.write_scalars({
@@ -114,7 +116,7 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
             }, tag='train', n_iter=train_step)
 
     if epoch % cfg.save_freq == 0:
-        save_model(model, epoch, scheduler.get_lr(), optimizer)
+        save_model(model, epoch, scheduler.get_lr(), optimizer, "end")
 
     print('Training Loss: {}'.format(losses.avg))
 

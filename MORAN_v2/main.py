@@ -241,7 +241,7 @@ for epoch in range(opt.niter):
             acc_tmp = val(test_dataset, criterion)
 
             with open("{0}/Val_iter_result.txt".format(opt.experiment),"a+") as f:
-                f.write('{0}_{1}_{2}\n'.format(epoch, i, str(acc)[:6]))
+                f.write('{0}_{1}_{2}\n'.format(epoch, i, str(acc_tmp)[:6]))
 
             if acc_tmp > acc:
                 acc = acc_tmp

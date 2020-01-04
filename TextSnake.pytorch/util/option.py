@@ -53,6 +53,7 @@ class BaseOptions(object):
         self.parser.add_argument('--optim', default='SGD', type=str, choices=['SGD', 'Adam'], help='Optimizer')
         self.parser.add_argument('--display_freq', default=50, type=int, help='display training metrics every # iterations')
         self.parser.add_argument('--viz_freq', default=50, type=int, help='visualize training process every # iterations')
+        self.parser.add_argument('--viz_save_iter', default=30000, type=int, help='visualize training process every # iterations')
         self.parser.add_argument('--save_freq', default=1, type=int, help='save weights every # epoch')
         self.parser.add_argument('--log_freq', default=100, type=int, help='log to tensorboard every # iterations')
         self.parser.add_argument('--val_freq', default=100, type=int, help='do validation every # iterations')
