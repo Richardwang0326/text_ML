@@ -63,7 +63,10 @@ class TextNet(nn.Module):
         self.is_training = is_training
         self.backbone_name = backbone
         self.output_channel = output_channel
-
+        self.attn1 = Self_Attn( 256, 'relu')
+        self.attn2 = Self_Attn( 128,  'relu')
+        self.attn3 = Self_Attn( 64,  'relu')
+        self.attn4 = Self_Attn( 32,  'relu')
         if backbone == 'vgg':
             self.backbone = VGG16(pretrain=self.is_training)
             self.deconv5 = nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1)
@@ -83,14 +86,22 @@ class TextNet(nn.Module):
         up5 = self.deconv5(C5)
         up5 = F.relu(up5)
 
+        up5 ,p1 = self.attn1(up5)
+
         up4 = self.merge4(C4, up5)
         up4 = F.relu(up4)
+
+        up4 ,p2 = self.attn2(up4)
 
         up3 = self.merge3(C3, up4)
         up3 = F.relu(up3)
 
+        # up3 ,p3 = self.attn3(up3)
+
         up2 = self.merge2(C2, up3)
         up2 = F.relu(up2)
+
+        # up2 ,p4 = self.attn4(up2)
 
         up1 = self.merge1(C1, up2)
         output = self.predict(up1)
