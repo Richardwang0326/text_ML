@@ -35,6 +35,7 @@ class Self_Attn(nn.Module):
         out = out.view(m_batchsize,C,width,height)
         
         out = self.gamma*out + x
+        # print (self.gamma)
         return out,attention
 
 
@@ -65,8 +66,8 @@ class TextNet(nn.Module):
         self.output_channel = output_channel
         self.attn1 = Self_Attn( 256, 'relu')
         self.attn2 = Self_Attn( 128,  'relu')
-        self.attn3 = Self_Attn( 64,  'relu')
-        self.attn4 = Self_Attn( 32,  'relu')
+        # self.attn3 = Self_Attn( 64,  'relu')
+        # self.attn4 = Self_Attn( 32,  'relu')
         if backbone == 'vgg':
             self.backbone = VGG16(pretrain=self.is_training)
             self.deconv5 = nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1)
