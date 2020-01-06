@@ -56,7 +56,7 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
     data_time = AverageMeter()
     end = time.time()
     model.train()
-    scheduler.step()
+    # scheduler.step()
 
     print('Epoch: {} : LR = {}'.format(epoch, lr))
 
@@ -123,7 +123,7 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
         save_model(model, epoch, scheduler.get_lr(), optimizer, "end")
 
     print('Training Loss: {}'.format(losses.avg))
-
+    scheduler.step()
 
 def validation(model, valid_loader, criterion, epoch, logger):
     save_dir = os.path.join(cfg.save_dir, cfg.exp_name)
