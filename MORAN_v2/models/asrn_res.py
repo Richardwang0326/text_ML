@@ -183,6 +183,41 @@ class Residual_block(nn.Module):
             residual = self.downsample(residual)
         return self.relu(residual + conv2)
 
+class Self_Attn(nn.Module):
+    """ Self attention Layer"""
+    def __init__(self,in_dim,activation):
+        super(Self_Attn,self).__init__()
+        self.chanel_in = in_dim
+        self.activation = activation
+        
+        self.query_conv = nn.Conv2d(in_channels = in_dim , out_channels = in_dim//8 , kernel_size= 1)
+        self.key_conv = nn.Conv2d(in_channels = in_dim , out_channels = in_dim//8 , kernel_size= 1)
+        self.value_conv = nn.Conv2d(in_channels = in_dim , out_channels = in_dim , kernel_size= 1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+        self.softmax  = nn.Softmax(dim=-1) #
+    def forward(self,x):
+        """
+            inputs :
+                x : input feature maps( B X C X W X H)
+            returns :
+                out : self attention value + input feature 
+                attention: B X N X N (N is Width*Height)
+        """
+        m_batchsize,C,width ,height = x.size()
+        proj_query  = self.query_conv(x).view(m_batchsize,-1,width*height).permute(0,2,1) # B X CX(N)
+        proj_key =  self.key_conv(x).view(m_batchsize,-1,width*height) # B X C x (*W*H)
+        energy =  torch.bmm(proj_query,proj_key) # transpose check
+        attention = self.softmax(energy) # BX (N) X (N) 
+        proj_value = self.value_conv(x).view(m_batchsize,-1,width*height) # B X C X N
+
+        out = torch.bmm(proj_value,attention.permute(0,2,1) )
+        out = out.view(m_batchsize,C,width,height)
+        
+        out = self.gamma*out + x
+        # print (self.gamma)
+        return out,attention
+
 class ResNet(nn.Module):
     def __init__(self,c_in):
         super(ResNet,self).__init__()
@@ -192,6 +227,9 @@ class ResNet(nn.Module):
         self.block3 = self._make_layer(64, 128, (2,1), 6)
         self.block4 = self._make_layer(128, 256, (2,1), 6)
         self.block5 = self._make_layer(256, 512, (2,1), 3)
+
+        self.attn1 = Self_Attn( 128, 'relu')
+        self.attn2 = Self_Attn( 256, 'relu')
 
     def _make_layer(self,c_in,c_out,stride,repeat=3):
         layers = []
@@ -205,7 +243,9 @@ class ResNet(nn.Module):
         block1 = self.block1(block0)
         block2 = self.block2(block1)
         block3 = self.block3(block2)
+        block3, p1 = self.attn1(block3)
         block4 = self.block4(block3)
+        block4, p2 = self.attn2(block4)
         block5 = self.block5(block4)
         return block5
 

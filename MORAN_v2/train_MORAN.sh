@@ -1,9 +1,9 @@
 GPU=0
 CUDA_VISIBLE_DEVICES=${GPU} \
-python3.7 main.py \
-	--train_nips /home/andyser/code/text_detect_recognize/text_ML/MORAN_v2/dataset/NIPS2014 \
-	--train_cvpr /home/andyser/code/text_detect_recognize/text_ML/MORAN_v2/dataset/CVPR2016 \
-	--valroot /home/andyser/code/text_detect_recognize/text_ML/MORAN_v2/dataset/evl/cute80_288 \
+python3 main.py \
+	--train_nips ./dataset/NIPS2014 \
+	--train_cvpr ./dataset/CVPR2016 \
+	--valroot ./dataset/evl/cute80_288 \
 	--workers 12 \
 	--batchSize 30 \
 	--niter 10 \
