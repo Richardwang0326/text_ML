@@ -74,14 +74,18 @@ def train(model, train_loader, criterion, scheduler, optimizer, epoch, logger):
         loss = tr_loss + tcl_loss + sin_loss + cos_loss + radii_loss
 
         # backward
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        try:
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-        losses.update(loss.item())
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
+            losses.update(loss.item())
+            # measure elapsed time
+            batch_time.update(time.time() - end)
+            end = time.time()
+        except:
+            print("Error happened!!")
+            continue
 
         if cfg.viz and i % cfg.viz_freq == 0:
             visualize_network_output(output, tr_mask, tcl_mask, mode='train')

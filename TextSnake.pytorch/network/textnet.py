@@ -87,12 +87,12 @@ class TextNet(nn.Module):
         up5 = self.deconv5(C5)
         up5 = F.relu(up5)
 
-        up5 ,p1 = self.attn1(up5)
+        # up5 ,p1 = self.attn1(up5)
 
         up4 = self.merge4(C4, up5)
         up4 = F.relu(up4)
 
-        up4 ,p2 = self.attn2(up4)
+        # up4 ,p2 = self.attn2(up4)
 
         up3 = self.merge3(C3, up4)
         up3 = F.relu(up3)
