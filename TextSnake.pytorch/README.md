@@ -89,7 +89,7 @@ $ CUDA_VISIBLE_DEVICES=$GPUID python train.py $EXPNAME --viz
 training with pretrained model(improved performance much)
 ```shell
 $ EXPNAME=example
-$ CUDA_VISIBLE_DEVICES=$GPUID python train_textsnake.py -W ignore::UserWarning example --viz --batch_size 8 --resume save/synthtext_pretrain/textsnake_vgg_0.pth
+$ CUDA_VISIBLE_DEVICES=$GPUID python -W ignore::UserWarning train_textsnake.py example --viz --batch_size 8 --resume save/synthtext_pretrain/textsnake_vgg_0.pth
 ```
 
 **options:**
