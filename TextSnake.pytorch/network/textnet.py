@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from network.vgg import VGG16
+from .senet.se_resnet import *
 
 class Self_Attn(nn.Module):
     """ Self attention Layer"""
@@ -81,6 +82,17 @@ class TextNet(nn.Module):
             )
         elif backbone == 'resnet':
             pass
+        elif backbone == 'senet':
+            self.backbone = CifarSEResNet(CifarSEBasicBlock, 3) 
+            self.deconv5 = nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1)
+            self.merge4 = Upsample(512 + 256, 128)
+            self.merge3 = Upsample(256 + 128, 64)
+            self.merge2 = Upsample(128 + 64, 32)
+            self.merge1 = Upsample(64 + 32, 16)
+            self.predict = nn.Sequential(
+                nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(16, self.output_channel, kernel_size=1, stride=1, padding=0)
+            )            
 
     def forward(self, x):
         C1, C2, C3, C4, C5 = self.backbone(x)

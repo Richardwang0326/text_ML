@@ -189,21 +189,21 @@ class CifarSEResNet(nn.Module):
         super(CifarSEResNet, self).__init__()
         self.inplane = 32
         self.conv1 = nn.Conv2d(
-            1, self.inplane, kernel_size=3, stride=1, padding=1, bias=False)
+            3, self.inplane, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(self.inplane)
         self.relu = nn.ReLU(inplace=True)
         self.layer1 = self._make_layer(
             block, 32, blocks=n_size, stride=1, reduction=reduction)
         self.layer2 = self._make_layer(
-            block, 32, blocks=n_size, stride=2, reduction=reduction)
-        self.layer3 = self._make_layer(
             block, 64, blocks=n_size, stride=2, reduction=reduction)
+        self.layer3 = self._make_layer(
+            block, 128, blocks=n_size, stride=2, reduction=reduction)
         self.layer4 = self._make_layer(
-            block, 128, blocks=n_size, stride=(2,1), reduction=reduction)
+            block, 256, blocks=n_size, stride=2, reduction=reduction)
         self.layer5 = self._make_layer(
-            block, 256, blocks=n_size, stride=(2,1), reduction=reduction)
+            block, 512, blocks=n_size, stride=2, reduction=reduction)
         self.layer6 = self._make_layer(
-            block, 512, blocks=n_size, stride=(2,1), reduction=reduction)
+            block, 512, blocks=n_size, stride=2, reduction=reduction)
         # self.avgpool = nn.AdaptiveAvgPool2d(1)
         # self.fc = nn.Linear(64, num_classes)
         self.initialize()
@@ -225,22 +225,28 @@ class CifarSEResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def forward(self, x):
-        x = self.conv1(x)       # torch.Size([30, 32, 32, 100])
-        x = self.bn1(x)         
-        x = self.relu(x)
-        x = self.layer1(x)      # torch.Size([30, 32, 32, 100])
-        x = self.layer2(x)      # torch.Size([30, 32, 16, 50])
-        x = self.layer3(x)      # torch.Size([30, 64, 8, 25])
-        x = self.layer4(x)      # torch.Size([30, 128, 4, 25])
-        x = self.layer5(x)      # torch.Size([30, 256, 2, 25])
-        x = self.layer6(x)      # torch.Size([30, 512, 1, 25])
+    def forward(self, x):        # torch.Size([8, 3, 512, 512])
+        C1 = self.conv1(x)       # torch.Size([8, 32, 512, 512])
+        C1 = self.bn1(C1)         
+        C1 = self.relu(C1)
+
+        C2 = self.layer1(C1)      # torch.Size([8, 32, 512, 512])
+
+        C3 = self.layer2(C2)      # torch.Size([8, 64, 256, 256])
+
+        C4 = self.layer3(C3)      # torch.Size([8, 128, 128, 128])
+
+        C5 = self.layer4(C4)      # torch.Size([8, 256, 64, 64])
+
+        C6 = self.layer5(C5)      # torch.Size([8, 512, 32, 32])
+
+        C7 = self.layer6(C6)      # torch.Size([8, 512, 16, 16])
 
         # x = self.avgpool(x)
         # x = x.view(x.size(0), -1)
         # x = self.fc(x)
 
-        return x
+        return C3, C4, C5, C6 ,C7
 
 
 class CifarSEPreActResNet(CifarSEResNet):

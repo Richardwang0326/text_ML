@@ -123,16 +123,19 @@ class VGG16(nn.Module):
         self.stage4 = nn.Sequential(*[net.features[layer] for layer in range(17, 24)])
         self.stage5 = nn.Sequential(*[net.features[layer] for layer in range(24, 31)])
 
-        # self.attn1 = Self_Attn( 256, 'relu')
-        # self.attn2 = Self_Attn( 512,  'relu')
-    def forward(self, x):
-        C1 = self.stage1(x)
-        C2 = self.stage2(C1)
-        C3 = self.stage3(C2)
-        # C3, p1 = self.attn1(C3)
-        C4 = self.stage4(C3)
-        # C4, p1 = self.attn2(C4)
-        C5 = self.stage5(C4)
+        self.attn1 = Self_Attn( 256, 'relu')
+        self.attn2 = Self_Attn( 512,  'relu')
+    def forward(self, x):           # torch.Size([8, 3, 512, 512]) 
+        C1 = self.stage1(x)         # torch.Size([8, 64, 256, 256]) 
+        C2 = self.stage2(C1)        # torch.Size([8, 128, 128, 128])   
+        C3 = self.stage3(C2)        # torch.Size([8, 256, 64, 64])
+        C3, p1 = self.attn1(C3)     
+        C4 = self.stage4(C3)        # torch.Size([8, 512, 32, 32])
+        C4, p1 = self.attn2(C4)     
+        C5 = self.stage5(C4)        # torch.Size([8, 512, 16, 16])
+
+        # print (x.shape)
+        # print (C1.shape, C2.shape, C3.shape, C4.shape, C5.shape)
         return C1, C2, C3, C4, C5
 
 
