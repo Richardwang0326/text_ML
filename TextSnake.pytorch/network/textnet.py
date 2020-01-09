@@ -65,8 +65,8 @@ class TextNet(nn.Module):
         self.is_training = is_training
         self.backbone_name = backbone
         self.output_channel = output_channel
-        self.attn1 = Self_Attn( 256, 'relu')
-        self.attn2 = Self_Attn( 128,  'relu')
+        # self.attn1 = Self_Attn( 256, 'relu')
+        # self.attn2 = Self_Attn( 128,  'relu')
         # self.attn3 = Self_Attn( 64,  'relu')
         # self.attn4 = Self_Attn( 32,  'relu')
         if backbone == 'vgg':

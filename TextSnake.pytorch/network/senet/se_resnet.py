@@ -230,9 +230,10 @@ class CifarSEResNet(nn.Module):
         C1 = self.bn1(C1)         
         C1 = self.relu(C1)
 
-        C2 = self.layer1(C1)      # torch.Size([8, 32, 512, 512])
+        ##### lite 
+        # C2 = self.layer1(C1)      # torch.Size([8, 32, 512, 512])  
 
-        C3 = self.layer2(C2)      # torch.Size([8, 64, 256, 256])
+        C3 = self.layer2(C1)      # torch.Size([8, 64, 256, 256])
 
         C4 = self.layer3(C3)      # torch.Size([8, 128, 128, 128])
 

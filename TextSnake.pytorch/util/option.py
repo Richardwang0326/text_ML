@@ -28,7 +28,7 @@ class BaseOptions(object):
         self.parser.add_argument('--net', default='vgg', type=str, choices=['vgg', 'resnet', 'senet'], help='Network architecture')
         self.parser.add_argument('--dataset', default='total-text', type=str, choices=['synth-text', 'total-text'], help='Dataset name')
         self.parser.add_argument('--resume', default=None, type=str, help='Path to target resume checkpoint')
-        self.parser.add_argument('--num_workers', default=8, type=int, help='Number of workers used in dataloading')
+        self.parser.add_argument('--num_workers', default=0, type=int, help='Number of workers used in dataloading')
         self.parser.add_argument('--cuda', default=True, type=str2bool, help='Use cuda to train model')
         self.parser.add_argument('--mgpu', action='store_true', help='Use multi-gpu to train model')
         self.parser.add_argument('--save_dir', default='./save/', help='Path to save checkpoint models')
