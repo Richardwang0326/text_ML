@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-from network.vgg import VGG16
+from network.vgg import *
 from .senet.se_resnet import *
 
 class Self_Attn(nn.Module):
@@ -83,7 +83,8 @@ class TextNet(nn.Module):
         elif backbone == 'resnet':
             pass
         elif backbone == 'senet':
-            self.backbone = CifarSEResNet(CifarSEBasicBlock, 3) 
+            # self.backbone = CifarSEResNet(CifarSEBasicBlock, 3) 
+            self.backbone = VGG16_senet(pretrain=self.is_training)
             self.deconv5 = nn.ConvTranspose2d(512, 256, kernel_size=4, stride=2, padding=1)
             self.merge4 = Upsample(512 + 256, 128)
             self.merge3 = Upsample(256 + 128, 64)

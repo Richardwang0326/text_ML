@@ -6,10 +6,10 @@ python3 main.py \
 	--valroot ./dataset/evl/cute80_288 \
 	--workers 0 \
 	--batchSize 30 \
-	--niter 10 \
+	--niter 20 \
 	--lr 1 \
 	--cuda \
-	--experiment output_senet/ \
+	--experiment cute80_288_senet/ \
 	--displayInterval 100 \
 	--valInterval 1000 \
 	--saveInterval 40000 \
