@@ -9,7 +9,7 @@ def visualize_network_output(output, tr_mask, tcl_mask,v_d,e_n,mode='train'):
 
     vis_dir = os.path.join(v_d, e_n + '_' + mode)
     if not os.path.exists(vis_dir):
-        os.mkdir(vis_dir)
+        os.makedirs(vis_dir)
 
     tr_pred = output[:, :2]
     tr_score, tr_predict = tr_pred.max(dim=1)
