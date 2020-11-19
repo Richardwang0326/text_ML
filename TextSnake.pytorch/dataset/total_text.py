@@ -80,7 +80,7 @@ if __name__ == '__main__':
     )
 
     trainset = TotalText(
-        data_root='data/total-text',
+        data_root='data/Images/Train',
         # ignore_list='./ignore_list.txt',
         is_training=True,
         transform=transform
