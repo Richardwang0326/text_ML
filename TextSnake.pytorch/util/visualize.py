@@ -5,7 +5,7 @@ import os
 from util.config import config as cfg
 
 
-def visualize_network_output(output, tr_mask, tcl_mask, mode='train',v_d,e_n):
+def visualize_network_output(output, tr_mask, tcl_mask,v_d,e_n,mode='train'):
 
     vis_dir = os.path.join(v_d, e_n + '_' + mode)
     if not os.path.exists(vis_dir):
