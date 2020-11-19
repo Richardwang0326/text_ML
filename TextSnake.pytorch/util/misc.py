@@ -3,11 +3,11 @@ import errno
 import os
 import cv2
 from shapely.geometry import Polygon
-from util.config import config as cfg
-cuda = True
+
 
 def to_device(*tensors):
-    device = torch.device('cuda') if cuda else torch.device('cpu')
+    is_cuda = True
+    device = torch.device('cuda') if is_cuda else torch.device('cpu')
     if len(tensors) < 2:
         return tensors[0].to(device)
     return (t.to(device) for t in tensors)
