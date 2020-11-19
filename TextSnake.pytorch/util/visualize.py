@@ -5,9 +5,9 @@ import os
 from util.config import config as cfg
 
 
-def visualize_network_output(output, tr_mask, tcl_mask, mode='train'):
+def visualize_network_output(output, tr_mask, tcl_mask, mode='train',v_d,e_n):
 
-    vis_dir = os.path.join(cfg.vis_dir, cfg.exp_name + '_' + mode)
+    vis_dir = os.path.join(v_d, e_n + '_' + mode)
     if not os.path.exists(vis_dir):
         os.mkdir(vis_dir)
 
@@ -43,10 +43,11 @@ def visualize_detection(image, contours, tr=None, tcl=None):
     image_show = image.copy()
     image_show = np.ascontiguousarray(image_show[:, :, ::-1])
     image_show = cv2.polylines(image_show, contours, True, (0, 0, 255), 3)
-
+    tr_thresh = 0.4
+    tr_thresh = 0.6
     if (tr is not None) and (tcl is not None):
-        tr = (tr > cfg.tr_thresh).astype(np.uint8)
-        tcl = (tcl > cfg.tcl_thresh).astype(np.uint8)
+        tr = (tr > tr_thresh).astype(np.uint8)
+        tcl = (tcl > tcl_thresh).astype(np.uint8)
         tr = cv2.cvtColor(tr * 255, cv2.COLOR_GRAY2BGR)
         tcl = cv2.cvtColor(tcl * 255, cv2.COLOR_GRAY2BGR)
         image_show = np.concatenate([image_show, tr, tcl], axis=1)
