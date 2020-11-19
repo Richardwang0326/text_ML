@@ -2,6 +2,7 @@ import numpy as np
 import errno
 import os
 import cv2
+import torch
 from shapely.geometry import Polygon
 
 
