@@ -4,7 +4,7 @@ import os
 import cv2
 from shapely.geometry import Polygon
 from util.config import config as cfg
-
+cuda = True
 
 def to_device(*tensors):
     device = torch.device('cuda') if cuda else torch.device('cpu')
