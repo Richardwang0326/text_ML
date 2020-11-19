@@ -295,14 +295,14 @@ class TextDetector(object):
         :param tr_pred_mask: (np.array), predicted text area mask, each with shape (H, W)
         :return: (np.ndarray list), polygon format contours
         """
-
+        post_process_expand = 0.3
         all_conts = []
         for disk in detect_result:
             reconstruct_mask = np.zeros(image.shape[1:], dtype=np.uint8)
             for x, y, r in disk:
                 # expand radius for higher recall
-                if cfg.post_process_expand > 0.0:
-                    r *= (1. + cfg.post_process_expand)
+                if post_process_expand > 0.0:
+                    r *= (1. + post_process_expand)
                 cv2.circle(reconstruct_mask, (int(x), int(y)), max(1, int(r)), 1, -1)
 
             # according to the paper, at least half of pixels in the reconstructed text area should be classiﬁed as TR
@@ -316,9 +316,9 @@ class TextDetector(object):
             elif not conts:
                 continue
             all_conts.append((conts[0][:, 0, :], disk))
-
+        post_process_merge = False
         # merge joined instances
-        if cfg.post_process_merge:
+        if post_process_merge:
             all_conts = self.merge_contours(all_conts)
         else:
             all_conts = [cont[0] for cont in all_conts]
