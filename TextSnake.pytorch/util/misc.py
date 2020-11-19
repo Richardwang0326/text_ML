@@ -7,9 +7,10 @@ from util.config import config as cfg
 
 
 def to_device(*tensors):
+    device = torch.device('cuda') if cuda else torch.device('cpu')
     if len(tensors) < 2:
-        return tensors[0].to(cfg.device)
-    return (t.to(cfg.device) for t in tensors)
+        return tensors[0].to(device)
+    return (t.to(device) for t in tensors)
 
 
 def mkdirs(newdir):
